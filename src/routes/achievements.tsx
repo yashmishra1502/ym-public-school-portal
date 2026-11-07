@@ -11,7 +11,7 @@ export const Route = createFileRoute("/achievements")({
   component: Achievements,
 });
 
-export const toppers = [
+const toppers = [
   ["Aditi Sharma", "Class XII Science", "98.6%"],
   ["Rohan Gupta", "Class XII Commerce", "97.8%"],
   ["Sneha Yadav", "Class X", "99.2%"],
