@@ -7,6 +7,10 @@ const links = [
   { to: "/academics", label: "Academics" },
   { to: "/admissions", label: "Admissions" },
   { to: "/facilities", label: "Facilities" },
+  { to: "/faculty", label: "Faculty" },
+  { to: "/achievements", label: "Achievements" },
+  { to: "/events", label: "Events" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/notices", label: "Notices" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -29,21 +33,21 @@ export function SiteHeader() {
             <div className="text-xs text-muted-foreground">Gorakhpur, U.P.</div>
           </div>
         </Link>
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-4 xl:flex">
           {links.map((l) => (
             <Link key={l.to} to={l.to} className="text-sm font-medium text-foreground/80 hover:text-accent" activeProps={{ className: "text-accent" }} activeOptions={{ exact: true }}>
               {l.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <Link to="/student-login" className="rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary hover:bg-secondary">Student Login</Link>
           <Link to="/staff-login" className="rounded-md bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90">Teacher/Staff Login</Link>
         </div>
-        <button className="lg:hidden rounded-md border px-3 py-2 text-sm" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
+        <button className="xl:hidden rounded-md border px-3 py-2 text-sm" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
       </div>
       {open && (
-        <div className="border-t px-4 py-3 lg:hidden">
+        <div className="border-t px-4 py-3 xl:hidden">
           <div className="flex flex-col gap-3">
             {links.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm font-medium">{l.label}</Link>
@@ -67,7 +71,7 @@ export function SiteFooter() {
         </div>
         <div className="text-sm">
           <div className="mb-3 font-semibold text-gold">Quick Links</div>
-          <div className="flex flex-col gap-2 opacity-90">
+          <div className="grid grid-cols-2 gap-2 opacity-90">
             {links.map((l) => <Link key={l.to} to={l.to}>{l.label}</Link>)}
           </div>
         </div>
