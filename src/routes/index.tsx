@@ -143,7 +143,7 @@ function Index() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {toppers.map(([n, c, p]) => (
               <div key={n} className="rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 text-center">
-                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gold font-display text-xl font-bold text-primary">{n.charAt(0)}</div>
+                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gold font-display text-xl font-bold text-primary">{n?.charAt(0)}</div>
                 <div className="mt-3 font-display text-3xl font-bold text-gold">{p}</div>
                 <div className="font-semibold">{n}</div>
                 <div className="text-sm opacity-75">{c}</div>

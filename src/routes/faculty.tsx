@@ -34,7 +34,7 @@ function Faculty() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {staff.map(([n, r, q]) => (
             <div key={n} className="rounded-xl border bg-card p-6 text-center transition hover:shadow-lg">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary font-display text-xl font-bold text-gold">{n.split(" ").at(-1)?.charAt(0)}</div>
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary font-display text-xl font-bold text-gold">{n?.split(" ").at(-1)?.charAt(0)}</div>
               <div className="mt-3 font-semibold">{n}</div>
               <div className="text-sm font-medium text-accent">{r}</div>
               <div className="mt-1 text-xs text-muted-foreground">{q}</div>
