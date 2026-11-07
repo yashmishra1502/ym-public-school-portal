@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { logout as fbLogout, useRequireRole } from "@/lib/auth";
+import { StudentManager } from "@/components/student-manager";
 
 export const Route = createFileRoute("/staff-dashboard")({
   head: () => ({
@@ -11,10 +13,7 @@ export const Route = createFileRoute("/staff-dashboard")({
   component: StaffDashboard,
 });
 
-type Session = { role: string; id: string };
-
-// Demo data – baad me database se connect kar sakte hain
-const teacher = { name: "Mrs. Sunita Rai", subject: "Mathematics", dept: "Senior Secondary" };
+// Demo data (schedule, students) – naam/subject Firebase se aata hai
 
 const schedule = [
   ["8:00", "Class X – B", "Trigonometry"],
@@ -38,7 +37,7 @@ const classes = ["Class IX – A", "Class X – A", "Class X – B", "Class XI �
 
 function StaffDashboard() {
   const navigate = useNavigate();
-  const [session, setSession] = useState<Session | null>(null);
+  const profile = useRequireRole("Staff", "/staff-login");
   const [present, setPresent] = useState<Record<string, boolean>>(
     Object.fromEntries(studentList.map((s) => [s, true])),
   );
@@ -46,21 +45,8 @@ function StaffDashboard() {
   const [assigned, setAssigned] = useState<{ cls: string; task: string; due: string }[]>([]);
   const [form, setForm] = useState({ cls: classes[2], task: "", due: "" });
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("ym_session");
-      const s = raw ? (JSON.parse(raw) as Session) : null;
-      if (s && s.role === "Staff") setSession(s);
-      else navigate({ to: "/staff-login" });
-    } catch {
-      navigate({ to: "/staff-login" });
-    }
-  }, [navigate]);
-
-  const logout = () => {
-    try {
-      localStorage.removeItem("ym_session");
-    } catch {}
+  const logout = async () => {
+    await fbLogout();
     navigate({ to: "/staff-login" });
   };
 
@@ -71,7 +57,7 @@ function StaffDashboard() {
     setForm({ ...form, task: "", due: "" });
   };
 
-  if (!session) {
+  if (!profile) {
     return <div className="grid min-h-[60vh] place-items-center text-muted-foreground">Loading…</div>;
   }
 
@@ -92,13 +78,13 @@ function StaffDashboard() {
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gold font-display text-2xl font-bold text-primary">
-              {teacher.name.charAt(5)}
+              {profile.name.charAt(0)}
             </div>
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Staff Dashboard</div>
-              <h1 className="mt-1 text-3xl font-bold md:text-4xl">Namaste, {teacher.name} 👋</h1>
+              <h1 className="mt-1 text-3xl font-bold md:text-4xl">Namaste, {profile.name} 👋</h1>
               <p className="mt-1 text-sm opacity-85">
-                {teacher.subject} · {teacher.dept} · Emp. ID {session.id}
+                {(profile.subject ?? "")} · {(profile.dept ?? "")} · Emp. ID {profile.id}
               </p>
             </div>
           </div>
@@ -123,6 +109,9 @@ function StaffDashboard() {
             </div>
           ))}
         </div>
+
+        {/* Student accounts */}
+        <StudentManager />
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left column */}
