@@ -6,12 +6,11 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/academics", label: "Academics" },
   { to: "/admissions", label: "Admissions" },
-  { to: "/facilities", label: "Facilities" },
+  
   { to: "/faculty", label: "Faculty" },
-  { to: "/achievements", label: "Achievements" },
-  { to: "/events", label: "Events" },
+  
   { to: "/gallery", label: "Gallery" },
-  { to: "/notices", label: "Notices" },
+  
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -53,7 +52,7 @@ export function SiteHeader() {
           <Link to="/student-login" className="whitespace-nowrap rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary hover:bg-secondary">Student Login</Link>
           <Link to="/staff-login" className="whitespace-nowrap rounded-md bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90">Staff Login</Link>
         </div>
-        <button className="lg:hidden rounded-md border px-3 py-2 text-sm" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
+        <button className="rounded-md border px-3 py-2 text-sm lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
       </div>
       {open && (
         <div className="border-t px-4 py-3 lg:hidden">
@@ -139,4 +138,10 @@ export function LoginCard({ role, idLabel, extra }: { role: string; idLabel: str
             <label className="flex items-center gap-2"><input type="checkbox" /> Remember me</label>
             <a href="#" className="text-accent hover:underline">Forgot password?</a>
           </div>
-          <button
+          <button className="w-full rounded-md bg-primary py-2.5 font-semibold text-primary-foreground hover:opacity-90">Sign In</button>
+          {msg && <p className="rounded-md bg-secondary p-3 text-center text-sm text-secondary-foreground">{msg}</p>}
+        </form>
+      </div>
+    </div>
+  );
+}
