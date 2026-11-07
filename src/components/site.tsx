@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 const links = [
   { to: "/", label: "Home" },
@@ -7,10 +7,7 @@ const links = [
   { to: "/academics", label: "Academics" },
   { to: "/admissions", label: "Admissions" },
   
-  { to: "/faculty", label: "Faculty" },
-  
-  { to: "/gallery", label: "Gallery" },
-  
+  { to: "/notices", label: "Notices" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -118,18 +115,31 @@ export function Section({ title, kicker, children }: { title?: string; kicker?: 
   );
 }
 
-export function LoginCard({ role, idLabel, extra }: { role: string; idLabel: string; extra?: ReactNode }) {
+export function LoginCard({ role, idLabel, extra, redirectTo }: { role: string; idLabel: string; extra?: ReactNode; redirectTo?: string }) {
   const [msg, setMsg] = useState("");
+  const [userId, setUserId] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!redirectTo) {
+      setMsg("Login system will be activated soon. (Demo only)");
+      return;
+    }
+    try {
+      localStorage.setItem("ym_session", JSON.stringify({ role, id: userId.trim() }));
+    } catch {}
+    navigate({ to: redirectTo as "/" });
+  };
   return (
     <div className="mx-auto max-w-md px-4 py-16">
       <div className="rounded-2xl border bg-card p-8 shadow-lg">
         <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-xl font-bold text-gold">YM</div>
         <h1 className="mt-4 text-center text-2xl font-bold text-primary">{role} Login</h1>
         <p className="mt-1 text-center text-sm text-muted-foreground">YM Public School, Gorakhpur</p>
-        <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); setMsg("Login system will be activated soon. (Demo only)"); }}>
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {extra}
           <label className="block text-sm font-medium">{idLabel}
-            <input required className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+            <input required value={userId} onChange={(e) => setUserId(e.target.value)} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
           </label>
           <label className="block text-sm font-medium">Password
             <input required type="password" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
