@@ -30,7 +30,7 @@ function About() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {team.map(([n, r]) => (
             <div key={n} className="rounded-xl border bg-card p-6 text-center">
-              <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-secondary font-display text-2xl font-bold text-primary">{n.split(" ").slice(-1)[0][0]}</div>
+              <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-secondary font-display text-2xl font-bold text-primary">{n.split(" ").at(-1)?.charAt(0)}</div>
               <div className="mt-4 font-semibold">{n}</div>
               <div className="text-sm text-muted-foreground">{r}</div>
             </div>
