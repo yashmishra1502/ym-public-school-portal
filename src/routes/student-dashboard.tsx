@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { logout as fbLogout, useRequireRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/student-dashboard")({
   head: () => ({
@@ -11,10 +12,7 @@ export const Route = createFileRoute("/student-dashboard")({
   component: StudentDashboard,
 });
 
-type Session = { role: string; id: string };
-
 // Demo data – baad me database / API se connect kar sakte hain
-const student = { name: "Aarav Sharma", cls: "Class X – B", roll: "23", house: "Ashoka House" };
 
 const timetable = [
   ["8:00", "Mathematics", "Mrs. Sunita Rai"],
@@ -56,31 +54,18 @@ const notices = [
 
 function StudentDashboard() {
   const navigate = useNavigate();
-  const [session, setSession] = useState<Session | null>(null);
+  const profile = useRequireRole("Student", "/student-login");
   const [homework, setHomework] = useState(initialHomework);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("ym_session");
-      const s = raw ? (JSON.parse(raw) as Session) : null;
-      if (s && s.role === "Student") setSession(s);
-      else navigate({ to: "/student-login" });
-    } catch {
-      navigate({ to: "/student-login" });
-    }
-  }, [navigate]);
-
-  const logout = () => {
-    try {
-      localStorage.removeItem("ym_session");
-    } catch {}
+  const logout = async () => {
+    await fbLogout();
     navigate({ to: "/student-login" });
   };
 
   const toggle = (id: number) =>
     setHomework((h) => h.map((x) => (x.id === id ? { ...x, done: !x.done } : x)));
 
-  if (!session) {
+  if (!profile) {
     return <div className="grid min-h-[60vh] place-items-center text-muted-foreground">Loading…</div>;
   }
 
@@ -101,13 +86,13 @@ function StudentDashboard() {
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gold font-display text-2xl font-bold text-primary">
-              {student.name.charAt(0)}
+              {profile.name.charAt(0)}
             </div>
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Student Dashboard</div>
-              <h1 className="mt-1 text-3xl font-bold md:text-4xl">Namaste, {student.name} 👋</h1>
+              <h1 className="mt-1 text-3xl font-bold md:text-4xl">Namaste, {profile.name} 👋</h1>
               <p className="mt-1 text-sm opacity-85">
-                {student.cls} · Roll No. {student.roll} · Adm. No. {session.id} · {student.house}
+                {profile.cls} · Roll No. {profile.roll} · Adm. No. {profile.id} · {profile.house}
               </p>
             </div>
           </div>
