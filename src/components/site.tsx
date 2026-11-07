@@ -1,3 +1,20 @@
+import { Link } from "@tanstack/react-router";
+import { useState, type ReactNode } from "react";
+
+const links = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/academics", label: "Academics" },
+  { to: "/admissions", label: "Admissions" },
+  { to: "/facilities", label: "Facilities" },
+  { to: "/faculty", label: "Faculty" },
+  { to: "/achievements", label: "Achievements" },
+  { to: "/events", label: "Events" },
+  { to: "/gallery", label: "Gallery" },
+  { to: "/notices", label: "Notices" },
+  { to: "/contact", label: "Contact" },
+] as const;
+
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
@@ -52,3 +69,74 @@ export function SiteHeader() {
     </header>
   );
 }
+
+export function SiteFooter() {
+  return (
+    <footer className="mt-20 bg-primary text-primary-foreground">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-4">
+        <div className="md:col-span-2">
+          <div className="font-display text-2xl font-bold text-gold">YM Public School</div>
+          <p className="mt-3 max-w-md text-sm opacity-80">Shaping disciplined, confident and compassionate citizens since 2005. Knowledge · Character · Service.</p>
+        </div>
+        <div className="text-sm">
+          <div className="mb-3 font-semibold text-gold">Quick Links</div>
+          <div className="grid grid-cols-2 gap-2 opacity-90">
+            {links.map((l) => <Link key={l.to} to={l.to}>{l.label}</Link>)}
+          </div>
+        </div>
+        <div className="text-sm opacity-90">
+          <div className="mb-3 font-semibold text-gold">Contact</div>
+          <p>Medical College Road, Gorakhpur, Uttar Pradesh – 273013</p>
+          <p className="mt-2">+91 98765 43210</p>
+          <p>info@ympublicschool.in</p>
+          <p className="mt-2">Mon–Sat · 8:00 AM – 2:30 PM</p>
+        </div>
+      </div>
+      <div className="border-t border-primary-foreground/15 py-4 text-center text-xs opacity-70">© {new Date().getFullYear()} YM Public School, Gorakhpur. All rights reserved.</div>
+    </footer>
+  );
+}
+
+export function PageHero({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <section className="bg-primary text-primary-foreground">
+      <div className="mx-auto max-w-7xl px-4 py-16">
+        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">YM Public School</div>
+        <h1 className="mt-2 text-4xl font-bold md:text-5xl">{title}</h1>
+        {subtitle && <p className="mt-3 max-w-2xl opacity-85">{subtitle}</p>}
+      </div>
+    </section>
+  );
+}
+
+export function Section({ title, kicker, children }: { title?: string; kicker?: string; children: ReactNode }) {
+  return (
+    <section className="mx-auto max-w-7xl px-4 pt-16">
+      {kicker && <div className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">{kicker}</div>}
+      {title && <h2 className="mb-8 mt-1 text-3xl font-bold text-primary md:text-4xl">{title}</h2>}
+      {children}
+    </section>
+  );
+}
+
+export function LoginCard({ role, idLabel, extra }: { role: string; idLabel: string; extra?: ReactNode }) {
+  const [msg, setMsg] = useState("");
+  return (
+    <div className="mx-auto max-w-md px-4 py-16">
+      <div className="rounded-2xl border bg-card p-8 shadow-lg">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-xl font-bold text-gold">YM</div>
+        <h1 className="mt-4 text-center text-2xl font-bold text-primary">{role} Login</h1>
+        <p className="mt-1 text-center text-sm text-muted-foreground">YM Public School, Gorakhpur</p>
+        <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); setMsg("Login system will be activated soon. (Demo only)"); }}>
+          {extra}
+          <label className="block text-sm font-medium">{idLabel}
+            <input required className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+          </label>
+          <label className="block text-sm font-medium">Password
+            <input required type="password" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+          </label>
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2"><input type="checkbox" /> Remember me</label>
+            <a href="#" className="text-accent hover:underline">Forgot password?</a>
+          </div>
+          <button
