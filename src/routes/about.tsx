@@ -11,7 +11,7 @@ export const Route = createFileRoute("/about")({
   component: About,
 });
 
-const team = [["Shri Y. M. Mishra", "Founder & Chairman"], ["Dr. R. K. Mishra", "Principal"], ["Mrs. Sunita Singh", "Vice Principal"], ["Mr. Anil Tripathi", "Academic Coordinator"]];
+const team = [["Shri Y. M. Mishra", "Founder & Chairman"], ["Dr. R. K. Mishra", "Principal"], ["Mrs. Sunita Singh", "Vice Principal"], ["Mr. Anil Tripathi", "Academic Coordinator"]] as const;
 
 function About() {
   return (
