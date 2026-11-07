@@ -14,8 +14,14 @@ const firebaseConfig = {
 
 // Lazy init: sirf tab chalta hai jab zarurat ho (SSR me crash nahi hoga)
 function getFirebaseApp() {
-  return getApps().length ? getApp() : initializeApp(firebaseConfig);
+  return getApps().find((a) => a.name === "[DEFAULT]") ?? initializeApp(firebaseConfig);
+}
+
+// Student account banate time teacher logout na ho, isliye alag (secondary) app use hota hai
+function getSecondaryApp() {
+  return getApps().find((a) => a.name === "secondary") ?? initializeApp(firebaseConfig, "secondary");
 }
 
 export const getFirebaseAuth = () => getAuth(getFirebaseApp());
+export const getSecondaryAuth = () => getAuth(getSecondaryApp());
 export const getDb = () => getFirestore(getFirebaseApp());
