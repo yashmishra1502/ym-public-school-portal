@@ -119,6 +119,13 @@ export function LoginCard({ role, idLabel, extra, redirectTo }: { role: string; 
   const [msg, setMsg] = useState("");
   const [userId, setUserId] = useState("");
   const navigate = useNavigate();
+  const demoLogin = () => {
+    if (!redirectTo) return;
+    try {
+      localStorage.setItem("ym_session", JSON.stringify({ role, id: "1001" }));
+    } catch {}
+    navigate({ to: redirectTo as "/" });
+  };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!redirectTo) {
@@ -148,7 +155,12 @@ export function LoginCard({ role, idLabel, extra, redirectTo }: { role: string; 
             <label className="flex items-center gap-2"><input type="checkbox" /> Remember me</label>
             <a href="#" className="text-accent hover:underline">Forgot password?</a>
           </div>
-          <button className="w-full rounded-md bg-primary py-2.5 font-semibold text-primary-foreground hover:opacity-90">Sign In</button>
+          <button type="submit" className="w-full rounded-md bg-primary py-2.5 font-semibold text-primary-foreground hover:opacity-90">Sign In</button>
+          {redirectTo && (
+            <button type="button" onClick={demoLogin} className="w-full rounded-md border border-accent py-2.5 font-semibold text-accent hover:bg-secondary">
+              Demo Login (ek click me)
+            </button>
+          )}
           {msg && <p className="rounded-md bg-secondary p-3 text-center text-sm text-secondary-foreground">{msg}</p>}
         </form>
       </div>
