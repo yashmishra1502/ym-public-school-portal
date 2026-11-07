@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent, type ReactNode } from "react";
+import { friendlyError, loginWithId, type Role } from "@/lib/auth";
 
 const links = [
   { to: "/", label: "Home" },
@@ -118,24 +119,22 @@ export function Section({ title, kicker, children }: { title?: string; kicker?: 
 export function LoginCard({ role, idLabel, extra, redirectTo }: { role: string; idLabel: string; extra?: ReactNode; redirectTo?: string }) {
   const [msg, setMsg] = useState("");
   const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const demoLogin = () => {
-    if (!redirectTo) return;
-    try {
-      localStorage.setItem("ym_session", JSON.stringify({ role, id: "1001" }));
-    } catch {}
-    navigate({ to: redirectTo as "/" });
-  };
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!redirectTo) {
-      setMsg("Login system will be activated soon. (Demo only)");
-      return;
-    }
+    if (!redirectTo || loading) return;
+    setMsg("");
+    setLoading(true);
     try {
-      localStorage.setItem("ym_session", JSON.stringify({ role, id: userId.trim() }));
-    } catch {}
-    navigate({ to: redirectTo as "/" });
+      await loginWithId(role as Role, userId, password);
+      navigate({ to: redirectTo as "/" });
+    } catch (err) {
+      setMsg(friendlyError(err));
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="mx-auto max-w-md px-4 py-16">
@@ -149,18 +148,13 @@ export function LoginCard({ role, idLabel, extra, redirectTo }: { role: string; 
             <input required value={userId} onChange={(e) => setUserId(e.target.value)} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
           </label>
           <label className="block text-sm font-medium">Password
-            <input required type="password" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+            <input required type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
           </label>
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2"><input type="checkbox" /> Remember me</label>
             <a href="#" className="text-accent hover:underline">Forgot password?</a>
           </div>
-          <button type="submit" className="w-full rounded-md bg-primary py-2.5 font-semibold text-primary-foreground hover:opacity-90">Sign In</button>
-          {redirectTo && (
-            <button type="button" onClick={demoLogin} className="w-full rounded-md border border-accent py-2.5 font-semibold text-accent hover:bg-secondary">
-              Demo Login (ek click me)
-            </button>
-          )}
+          <button type="submit" disabled={loading} className="w-full rounded-md bg-primary py-2.5 font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60">{loading ? "Signing in…" : "Sign In"}</button>
           {msg && <p className="rounded-md bg-secondary p-3 text-center text-sm text-secondary-foreground">{msg}</p>}
         </form>
       </div>
